@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./src/css/materialize.css">
+  <link rel="stylesheet" href="./src/css/style.css">
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <title>RMS</title>
+</head>
+
+<body>
+
+
+  <nav>
+  <nav>
+      <div class="nav-wrapper">
+        <a href="#!" class="brand-logo">RMS</a>
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="#sass.html">Sass</a></li>
+          <li><a href="#badges.html">Components</a></li>
+          <li><a href="#collapsible.html">Javascript</a></li>
+          <li><a href="#mobile.html">Mobile</a></li>
+        </ul>
+      </div>
+    </nav>
+   <ul class="sidenav" id="mobile-demo">
+      <li><a href="#sass.html">Sass</a></li>
+      <li><a href="#badges.html">Components</a></li>
+      <li><a href="#collapsible.html">Javascript</a></li>
+      <li><a href="#mobile.html">Mobile</a></li>
+    </ul>
+  </nav>
+
+ <div id="app">
+ <!-- bllyud/ingredient -->
+    <div class="row" v-if="view!= 'loading'">
+      <div class="col s12 p0">
+        <ul class="tabs">
+          <li class="tab col s6"><a class="active" @click='view="dishes"'>Блюда</a></li>
+          <li class="tab col s6"><a @click='view="ingredients"'>Ингредиенты</a></li>
+    </ul>
+      </div>
+  </div>
+    <!-- bllyud/ingredient -->
+   <div v-if="view == 'loading'" class="progress" style="margin-top: 200px;">
+      <div class="indeterminate"></div>
+    </div>
+  <!-- DISHES -->
+    <div class="container wrapper-wrapper" v-show="view=='dishes'">
+      <h2 class="center">Блюда <img @click="addModal('dish')" src="./img/add.png" style="width :3rem; cursor: pointer;"> </h2>
+    <div class="wrapper">
+        <div class="wrapper-item" v-for="dish,idx in dishes" :key="dish.id">
+        <div class="card masonry-content">
+            <div class="card-image">
+              <img :src="dish.imgSrc">
+              <a class="btn-floating btn-small halfway-fab waves-effect waves-light red"><i class="material-icons"
+                  @click="dishModal(idx)">create</i></a>
+            </div>
+            <div class="card-content">
+              <span class="card-title">{{dish.name}}</span>
+              <p :class="{ 'red-text' : dish.storage == 0}">Остаток: {{dish.storage}}</p>
+              <p>Категория: <i>{{dish.category}}</i></p>
+            </div>
+          </div>
+       </div>
+   </div>
+    </div>
+
+    <!-- ingredients -->
+    <div class="container wrapper-wrapper" v-show="view=='ingredients'">
+      <h3 class="center">Ингредиенты  <img @click="addModal('ingredient')" src="./img/add.png" style="width :3rem; cursor: pointer;"></h3>
+
+      <div class="row" v-if="view!= 'loading'">
+        <div class="col s12 p0">
+          <ul class="tabs">
+            <li class="tab col s6"><a class="active" @click='viewIng="card"'>Карты</a></li>
+            <li class="tab col s6"><a @click='viewIng="table"'>Таблица</a></li>
+
+          </ul>
+        </div>
+
+
+      </div>
+
+
+      <div class="wrapper" v-show="viewIng != 'table'" att>
+        <div class="wrapper-item" v-for="ingredient, idx in ingredients" :key="ingredient.id">
+
+
+
+          <div class="card masonry-content ">
+            <div class="card-image">
+              <img :src="ingredient.imgSrc" style="width : 100%">
+              <a @click='ingredientModal(idx)'
+                class="btn-floating btn-small halfway-fab waves-effect waves-light red"><i
+                  class="material-icons">create</i></a>
+            </div>
+            <div class="card-content">
+              <span class="card-title">{{ingredient.name}}</span>
+              <p :class="{ 'red-text' : ingredient.storage == 0}">Остаток: {{ingredient.storage}}{{ingredient.category}}
+              </p>
+
+            </div>
+          </div>
+
+        </div>
+
+
+
+
+
+
+      </div>
+      <table class=" col s12 striped" v-show="viewIng == 'table'">
+        <thead>
+          <tr>
+            <th> </th>
+            <th>Название</th>
+            <th>Остаток</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr v-for="ingredient,idx in ingredients" :key="ingredient.id" style="cursor: pointer;"
+            @click='ingredientModal(idx)'>
+
+            <td> <img :src="ingredient.imgSrc" style="width: 40px"></td>
+            <td>{{ingredient.name}}</td>
+            <td :class="{ 'red-text' : ingredient.storage == 0}">{{ingredient.storage}}{{ingredient.category}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+
+    <div id="dishModal" class="modal" v-show="currentDish.show">
+      <span id="dishAnchor"></span>
+      <div class="modal-content row">
+        <div class="col m6 s12">
+          <h4>{{currentDish.name}}</h4>
+
+
+
+          <p :class="{ 'red-text' : currentDish.storage == 0}">Остаток: {{currentDish.storage}}</p>
+          <p>Категория: <i>{{currentDish.category}}</i></p>
+          <p >Нужно :</p>
+
+          <div v-for="ingredient in currentDish.IngredientsInUse" :class="{ 'red-text' : Number(ingredient.need) > Number(ingredient.storage)}">
+
+
+            <p > <b> {{ingredient.name}} </b> Есть : {{ingredient.storage}}{{ingredient.category}}, Нужно:
+              {{ingredient.need}}{{ingredient.category}} </p>
+
+          </div>
+        </div>
+
+        <div class="col m6 s12">
+          <img :src="currentDish.imgSrc" alt="" style="width: 100%;">
+        </div>
+
+        
+        
+      </div>
+      
+         
+      <div class="modal-footer">
+        <a href="#!" @click="editModal('dish',currentDish)" class="modal-close waves-effect waves-green btn-flat">Отредактировать</a>
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Закрыть</a>
+        <a href="#!" @click="deleteFromServer(false,currentDish.id, 'dish')" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons">delete</i></a>
+      </div>
+    </div>
+
+
+    <div id="ingredientModal" class="modal" v-show="currentIngredient.show">
+      <span id="ingredientAnchor"></span>
+
+      <div class="modal-content row">
+        <div class="col m6 s12">
+          <h4 id="ingName">{{currentIngredient.name}}</h4>
+
+
+
+          <p :class="{ 'red-text' : currentIngredient.storage == 0}">Остаток:
+            {{currentIngredient.storage}}{{currentIngredient.category}}</p>
+
+
+        </div>
+
+        <div class="col m6 s12">
+          <img :src="currentIngredient.imgSrc" alt="" style="width: 100%;">
+        </div>
+
+
+
+      </div>
+      <div class="modal-footer">
+ 
+        <a href="#!" @click="editModal('ingredient',currentIngredient)" class="modal-close waves-effect waves-green btn-flat">Отредактировать</a>
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Закрыть</a>
+        <a href="#!" @click="deleteFromServer(false,currentIngredient.id, 'ingredient')" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons">delete</i></a>
+      </div>
+    </div>
+<component :is="currentComponent" :dataforcomponent="dataForComponent" @edittoserver="editToServer" @destroycomponent="destroycomponent" @addtoserver="addToServer"></component>
+
+
+
+  </div>
+
+
+
+
+
+
+
+  <script src="./src/js/materialize.js"></script>
+  <script src="./src/js/axios.js"></script>
+
+
+
+  <script src="./src/js/vue.js"></script>
+  <script src="./src/js/disheditcomponent.js"></script>
+  <script src="./src/js/ingeditcomponent.js"></script>
+  <script src="./src/js/dishaddcomponent.js"></script>
+  <script src="./src/js/ingaddcomponent.js"></script>
+  
+  <script src="./src/js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+img {
+  width: 100%;
+}
+.wrapper {
+    /* display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; */
+    columns: 3;
+    column-gap: 10px;
+  }
+  .wrapper-item{
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 20px;
+    max-width: 100%;
+  }
+  .card-content{
+    padding: 10px !important;
+  }
+/* .wrapper-wrapper{
+  padding: 1.5em;
+  max-width: 960px;
+  margin-right: auto;
+  margin-left: auto;
+} */
+.masonry-item, .masonry-content {
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+.p0 {
+    padding: 0 !important;
+}
+
+  /* // Small devices (landscape phones, 576px and up) */
+@media (min-width: 5px) and (max-width: 768px ) {  
+    .wrapper {
+      columns: 2;
+        /* display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px; */
+      }
+
+
+}
+
+/* // Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {  }
+/* 
+// Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {  }
+/* 
+// X-Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {  }
+/* 
+// XX-Large devices (larger desktops, 1400px and up) */
+@media (min-width: 1400px) { }
